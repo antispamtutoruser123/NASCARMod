@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "ZdAK0FjlMkEhPn69CsnUJxtb3+rgHgQ1LrcomIBXs5X85bzlmFzSiB0mYTub2Lr0kMuPF6Fngo0cUnVvv/Beuw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\jj131\\NASCARMod\\VRPatcher\\VRPatcher.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\jj131\\.nuget\\packages\\assetstools.net\\2.0.7\\assetstools.net.2.0.7.nupkg.sha512",
+    "C:\\Users\\jj131\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "C:\\Users\\jj131\\.nuget\\packages\\mono.cecil\\0.11.3\\mono.cecil.0.11.3.nupkg.sha512",
+    "C:\\Users\\jj131\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
