@@ -40,14 +40,14 @@ namespace NASCARVR
             Logs.WriteInfo($"Hiding Canvas:  {__instance.name}");
             var canvas = __instance.GetComponent<Canvas>();
 
-          //  if (__instance.name == "OverlayCanvas") 
-           //  AttachedUi.Create<StaticUi>(canvas, 0.00145f);
+           if (__instance.name == "OverlayCanvas") 
+             AttachedUi.Create<StaticUi>(canvas, 0.00145f);
         }
 
 
         [HarmonyPrefix]
         [HarmonyPatch(typeof(MGI.CarManager.CarInstancePlayer), "Start")]
-        private static void fixlighting(MGI.CarManager.CarInstancePlayer __instance)
+        private static void createcamera(MGI.CarManager.CarInstancePlayer __instance)
         {
             if (!VRCamera) {
                 Logs.WriteInfo($"LLLL: Creating VRCamera");
@@ -63,7 +63,7 @@ namespace NASCARVR
                 // Third Person
                 // DummyCamera.transform.localPosition = new Vector3(0,1f,0);
                 // first person
-                 DummyCamera.transform.localPosition = new Vector3(0, -1f, 0);
+                 DummyCamera.transform.localPosition = new Vector3(0, -1.02f, 0);
 
                 VRCamera.transform.parent = DummyCamera.transform;
                 startpos = new Vector3(.2f, 1.8f, -.5f);

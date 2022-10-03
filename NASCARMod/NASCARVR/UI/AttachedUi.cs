@@ -22,6 +22,9 @@ namespace NASCARVR
             for (int i = 0; i < canvas.gameObject.transform.childCount; i++)
             {
                 Logs.WriteInfo($"canvas Child{i}:  {canvas.gameObject.transform.GetChild(i).name}");
+                if (canvas.gameObject.transform.GetChild(i).name == "IG_Speedometer")
+                    canvas.gameObject.transform.GetChild(i).transform.localPosition += new Vector3(0, 50f, 0);
+
                 if (canvas.gameObject.transform.GetChild(i).name == "MediaPlayer")
                     foreach (var component in canvas.gameObject.transform.GetChild(i).GetComponents<Component>())
                     {
@@ -33,8 +36,8 @@ namespace NASCARVR
         }
         protected virtual void Start()
         {
-            transform.position = Camera.main.transform.position + Camera.main.transform.forward * 2f;
-            transform.rotation = Camera.main.transform.rotation;
+           // transform.position = Camera.main.transform.position + Camera.main.transform.forward * 2f;
+           // transform.rotation = Camera.main.transform.rotation;
         }
         protected virtual void Update()
         {
@@ -48,8 +51,9 @@ namespace NASCARVR
 
         private void UpdateTransform()
         {
-            transform.position = Camera.main.transform.position + Camera.main.transform.forward*2f;
-            transform.rotation = Camera.main.transform.rotation;
+            transform.position = CameraPatches.DummyCamera.transform.parent.position + CameraPatches.DummyCamera.transform.parent.forward *4f + new Vector3(0,1.2f,0);
+            transform.rotation = CameraPatches.DummyCamera.transform.parent.rotation;
+
         }
     }
 }
