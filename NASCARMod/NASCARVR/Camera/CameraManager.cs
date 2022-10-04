@@ -8,18 +8,24 @@ namespace NASCARVR
     class CameraManager
     {
         static int cameramode;
+        static Vector3 roffsetprev= Vector3.zero;
+        static Vector3 prevpos = Vector3.zero;
         public static void Recenter()
         {
             Logs.WriteInfo($"LLLL: RECENTERING");
             if (!CameraPatches.VRCamera) return;
 
-            Vector3 offset = CameraPatches.startpos - CameraPatches.VRCamera.transform.position;
-            Vector3 roffset = CameraPatches.startrot - CameraPatches.VRCamera.transform.eulerAngles;
+            Vector3 offset = CameraPatches.startpos - CameraPatches.VRCamera.transform.localPosition;
+            Vector3 roffset = CameraPatches.startrot - CameraPatches.VRCamera.transform.localEulerAngles;
+    
+           // CameraPatches.DummyCamera.transform.RotateAround(CameraPatches.VRCamera.transform.position, Vector3.up, roffset.y - roffsetprev.y);
 
-            CameraPatches.DummyCamera.transform.localPosition = new Vector3(0, -1f, 0) - offset;
-            CameraPatches.DummyCamera.transform.localEulerAngles = Vector3.zero - roffset;
+            CameraPatches.DummyCamera.transform.Translate(offset-prevpos);
+    
+            roffsetprev = roffset;
+            prevpos = offset;
 
-            switch (cameramode)
+         /*   switch (cameramode)
             {
                 case 0:  // recenter
                     cameramode = 1;
@@ -31,17 +37,8 @@ namespace NASCARVR
                 default:
                     break;
             }
+         */
         }
-        private Vector3 GetCameraOffset()
-        {
-            try
-            {
-                return CameraPatches.DummyCamera.transform.localPosition - CameraPatches.VRCamera.transform.localPosition;
-            }
-            catch
-            {
-                return Vector3.zero;
-            }
-        }
+     
     }
 }

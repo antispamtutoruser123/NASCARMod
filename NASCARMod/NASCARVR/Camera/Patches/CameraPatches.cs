@@ -17,19 +17,15 @@ namespace NASCARVR
         public static GameObject DummyCamera, VRCamera;
 
         private static readonly string[] canvasesToIgnore =
-{
+    {
         "com.sinai.unityexplorer_Root", // UnityExplorer.
         "com.sinai.unityexplorer.MouseInspector_Root", // UnityExplorer.
         "IntroCanvas"
     };
-
-      /*  [HarmonyPostfix]
-        [HarmonyPatch(typeof(RenderHeads.Media.AVProVideo.MediaPlayer), "Update")]
-        private static void MoveIntroCanvas(RenderHeads.Media.AVProVideo.MediaPlayer __instance)
-        {
-            __instance.Stop();
-        }
-        */
+        private static readonly string[] canvasesToWorld =
+    {
+        "OverlayCanvas"
+    };
 
         [HarmonyPostfix]
         [HarmonyPatch(typeof(CanvasScaler), "OnEnable")]
@@ -40,8 +36,23 @@ namespace NASCARVR
             Logs.WriteInfo($"Hiding Canvas:  {__instance.name}");
             var canvas = __instance.GetComponent<Canvas>();
 
-           if (__instance.name == "OverlayCanvas") 
+           if (IsCanvasToWorld(__instance.name)) 
              AttachedUi.Create<StaticUi>(canvas, 0.00145f);
+        }
+
+        static bool buttondown = false;
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(MGI.Platform.PC.NormalizedPCControllerState), "SetFromXInputGamepad")]
+        private static void GetButtonInput(MGI.Platform.PC.NormalizedPCControllerState __instance) {
+
+            if (__instance.buttons[12] && !buttondown)
+            {  // X button
+                CameraManager.Recenter();
+                buttondown = true;
+            }
+
+            if (!__instance.buttons[12])
+                buttondown = false;
         }
 
 
@@ -67,6 +78,7 @@ namespace NASCARVR
 
                 VRCamera.transform.parent = DummyCamera.transform;
                 startpos = new Vector3(.2f, 1.8f, -.5f);
+                startrot = new Vector3(356.6f,187.9f,.6f);
                 offset = startpos - VRCamera.transform.localPosition;
                 Logs.WriteInfo($"RRRRRR: In Car position: startpos startrot offset {VRCamera.transform.localPosition} {VRCamera.transform.localEulerAngles} {offset}");
 
@@ -76,81 +88,17 @@ namespace NASCARVR
         }
 
 
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(MGI.CarManager.CarInstancePlayer), "Update")]
-        private static void MoveCamera(MGI.CarManager.CarInstancePlayer __instance)
-        {
-
-            float newx, newz;
-
-            float speed = 4f * Time.deltaTime;
-
-            //DummyCamera.transform.localPosition += new Vector3(0, .1f*Time.deltaTime, 0);
-
-            if (Input.GetKey("1") || Input.GetKey("2"))
-                    speed = 40f * Time.deltaTime;
-            offset = startpos - VRCamera.transform.localPosition;
-//Logs.WriteInfo($"LLLL: In Car position: startpos startrot offset {VRCamera.transform.localPosition} {VRCamera.transform.localEulerAngles} {offset}");
-
-            if (Input.GetKey(KeyCode.Return))
-            {
-                Logs.WriteInfo($"LLLL: ENTER KEY PRESSED");
-                CameraManager.Recenter();
-
-            }
-
-            if (Input.GetKey(KeyCode.Mouse0))
-            {
-                Logs.WriteInfo($"LLLL: Moving VRCamera Mouse0 ");
-                newx = (VRCamera.transform.localRotation * Vector3.right * -speed).x;
-                    newz = (VRCamera.transform.localRotation * Vector3.right * -speed).z;
-                    DummyCamera.transform.Translate(newx, 0, newz);
-                }
-
-                if (Input.GetKey(KeyCode.Joystick1Button0))
-            {
-                Logs.WriteInfo($"LLLL: Moving VRCamera Joystick1Button0");
-                newx = (VRCamera.transform.localRotation * Vector3.right * speed).x;
-                    newz = (VRCamera.transform.localRotation * Vector3.right * speed).z;
-                    DummyCamera.transform.Translate(newx, 0, newz);
-                }
-                if (Input.GetKey(KeyCode.W))
-                {
-                Logs.WriteInfo($"LLLL: Moving VRCamera W");
-                newx = (VRCamera.transform.localRotation * Vector3.forward * speed).x;
-                    newz = (VRCamera.transform.localRotation * Vector3.forward * speed).z;
-                 //   DummyCamera.transform.Translate(newx, 0, newz);
-                DummyCamera.transform.localPosition += new Vector3(0, 0, -speed * Time.deltaTime);
-            }
-                
-                if (Input.GetKey("s"))
-                {
-                    newx = (VRCamera.transform.localRotation * Vector3.forward * -speed).x;
-                    newz = (VRCamera.transform.localRotation * Vector3.forward * -speed).z;
-                  //  DummyCamera.transform.Translate(newx, 0, newz);
-                DummyCamera.transform.localPosition += new Vector3(0, 0, speed * Time.deltaTime);
-                }
-
-                if (Input.GetKey("r"))
-                    DummyCamera.transform.Translate(0f, speed * .7f, 0f);
-                if (Input.GetKey("f"))
-                    DummyCamera.transform.Translate(0f, -speed * .7f, 0f);
-                /*   if (Input.GetKey("g"))
-                       DummyCamera.transform.parent.RotateAround(VRCamera.transform.position, Vector3.up, -30f * Time.deltaTime);
-                   if (Input.GetKey("h"))
-                       DummyCamera.transform.parent.RotateAround(VRCamera.transform.position, Vector3.up, 30f * Time.deltaTime);
-               */
-                // snap turn
-                if (Input.GetKeyDown("g"))
-                    DummyCamera.transform.parent.RotateAround(VRCamera.transform.position, Vector3.up, curangle - 30f);
-                if (Input.GetKeyDown("h"))
-                    DummyCamera.transform.parent.RotateAround(VRCamera.transform.position, Vector3.up, curangle + 30f);
-            
-        }
-
         private static bool IsCanvasToIgnore(string canvasName)
         {
             foreach (var s in canvasesToIgnore)
+                if (Equals(s, canvasName))
+                    return true;
+            return false;
+        }
+
+        private static bool IsCanvasToWorld(string canvasName)
+        {
+            foreach (var s in canvasesToWorld)
                 if (Equals(s, canvasName))
                     return true;
             return false;
