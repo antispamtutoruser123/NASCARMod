@@ -5,11 +5,20 @@ using UnityEngine;
 
 namespace NASCARVR
 {
-    class CameraManager
+    class CameraManager : MonoBehaviour
     {
         static int cameramode;
         static Vector3 roffsetprev= Vector3.zero;
         static Vector3 prevpos = Vector3.zero;
+
+        public static void RecenterRotation()
+        {
+            if (!CameraPatches.VRCamera) return;
+            var angleOffset = CameraPatches.VRPlayer.transform.eulerAngles.y - CameraPatches.VRCamera.transform.eulerAngles.y;
+            CameraPatches.DummyCamera.transform.RotateAround(CameraPatches.VRPlayer.transform.position, Vector3.up, angleOffset);
+            CameraPatches.DummyCamera.transform.eulerAngles = Vector3.up * CameraPatches.DummyCamera.transform.eulerAngles.y;
+        }
+
         public static void Recenter()
         {
             Logs.WriteInfo($"LLLL: RECENTERING");
@@ -17,8 +26,9 @@ namespace NASCARVR
 
             Vector3 offset = CameraPatches.startpos - CameraPatches.VRCamera.transform.localPosition;
             Vector3 roffset = CameraPatches.startrot - CameraPatches.VRCamera.transform.localEulerAngles;
-    
-           // CameraPatches.DummyCamera.transform.RotateAround(CameraPatches.VRCamera.transform.position, Vector3.up, roffset.y - roffsetprev.y);
+
+            // CameraPatches.DummyCamera.transform.RotateAround(CameraPatches.VRCamera.transform.position, Vector3.up, roffset.y - roffsetprev.y);
+            RecenterRotation();
 
             CameraPatches.DummyCamera.transform.Translate(offset-prevpos);
     

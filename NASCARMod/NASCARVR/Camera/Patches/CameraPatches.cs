@@ -14,7 +14,7 @@ namespace NASCARVR
         static float curangle = 0;
         public static Vector3 startpos,startrot,offset;
 
-        public static GameObject DummyCamera, VRCamera;
+        public static GameObject DummyCamera, VRCamera,VRPlayer;
 
         private static readonly string[] canvasesToIgnore =
     {
@@ -70,14 +70,14 @@ namespace NASCARVR
             VRCamera.GetComponent<Camera>().farClipPlane = 50000f;
 
             DummyCamera.transform.parent = __instance.transform;
-
+                VRPlayer = __instance.gameObject;
                 // Third Person
                 // DummyCamera.transform.localPosition = new Vector3(0,1f,0);
                 // first person
                  DummyCamera.transform.localPosition = new Vector3(0, -1.02f, 0);
 
                 VRCamera.transform.parent = DummyCamera.transform;
-                startpos = new Vector3(.2f, 1.8f, -.5f);
+                startpos = new Vector3(.5f, 1.8f, .3f);
                 startrot = new Vector3(356.6f,187.9f,.6f);
                 offset = startpos - VRCamera.transform.localPosition;
                 Logs.WriteInfo($"RRRRRR: In Car position: startpos startrot offset {VRCamera.transform.localPosition} {VRCamera.transform.localEulerAngles} {offset}");
