@@ -51,10 +51,12 @@ namespace NASCARVR
 
         private void UpdateTransform()
         {
-            transform.position = CameraPatches.DummyCamera.transform.parent.position + CameraPatches.DummyCamera.transform.parent.forward *4f + new Vector3(0,1.2f,0);
-            transform.rotation = CameraPatches.DummyCamera.transform.parent.rotation;
-            Logs.WriteInfo($"RRRRRR: In Car position: startpos startrot {CameraPatches.VRCamera.transform.localPosition} {CameraPatches.VRCamera.transform.localEulerAngles}");
-
+            if (CameraPatches.DummyCamera)
+            {
+                transform.position = CameraPatches.DummyCamera.transform.parent.position + CameraPatches.DummyCamera.transform.parent.forward * 4f + new Vector3(0, 1.2f, 0);
+                transform.rotation = CameraPatches.DummyCamera.transform.parent.rotation;
+               // Logs.WriteInfo($"RRRRRR: In Car position: startpos startrot {CameraPatches.VRCamera.transform.localPosition} {CameraPatches.VRCamera.transform.localEulerAngles}");
+            }
         }
     }
 }

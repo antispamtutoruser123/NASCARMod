@@ -33,8 +33,8 @@ namespace NASCARVR
         }
         private static void InitSteamVR()
         {
-            Logs.WriteInfo($"LLLL: Calling SteamVR_Actions.PreInitialize");
-            SteamVR_Actions.PreInitialize();
+          //  Logs.WriteInfo($"LLLL: Calling SteamVR_Actions.PreInitialize");
+          //  SteamVR_Actions.PreInitialize();
             Logs.WriteInfo($"LLLL: Calling SteamVR.Initialize");
             SteamVR.Initialize();
 
@@ -42,8 +42,8 @@ namespace NASCARVR
 
 
             // INPUT TEST
-            SteamVR_Actions._default.InteractUI.AddOnStateDownListener(OnInteractUI2Down, SteamVR_Input_Sources.Any);
-            SteamVR_Actions._default.InteractUI2.AddOnStateDownListener(OnInteractUIDown, SteamVR_Input_Sources.Any);
+         //   SteamVR_Actions._default.InteractUI.AddOnStateDownListener(OnInteractUI2Down, SteamVR_Input_Sources.Any);
+         //   SteamVR_Actions._default.InteractUI2.AddOnStateDownListener(OnInteractUIDown, SteamVR_Input_Sources.Any);
          
         }
 
