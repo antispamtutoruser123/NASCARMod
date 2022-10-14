@@ -32,9 +32,9 @@ namespace NASCARVR
             Vector3 offset = CameraPatches.startpos - CameraPatches.VRCamera.transform.localPosition;
             Vector3 roffset = CameraPatches.startrot - CameraPatches.VRCamera.transform.localEulerAngles;
 
-            
+            Vector3 trans = offset - prevpos;
 
-            CameraPatches.DummyCamera.transform.Translate(offset - prevpos);
+            CameraPatches.DummyCamera.transform.Translate(0,trans.y,0);
 
             RecenterRotation();
 

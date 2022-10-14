@@ -74,7 +74,7 @@ namespace NASCARVR
 
                 if (!rt)
                 {
-                    rt = new RenderTexture(1280, 720, 24);
+                    rt = new RenderTexture(1310, 800, 24);
 
                     worldcam.GetComponent<Camera>().targetTexture = rt;
 
@@ -83,9 +83,9 @@ namespace NASCARVR
                     newUI.AddComponent<RawImage>();
                     canvas = newUI.GetComponent<Canvas>();
                     canvas.renderMode = RenderMode.WorldSpace;
-                    newUI.transform.position =  new Vector3(-130f,0,0);
+                    newUI.transform.position =  new Vector3(-130f,1f,-1f);
                     newUI.transform.localScale = new Vector3(.16f, .09f, .1f);
-                    newUI.transform.eulerAngles = new Vector3(0,-20f,0);
+                    newUI.transform.eulerAngles = new Vector3(0,-18f,0);
                     newUI.GetComponent<RawImage>().texture = rt;
                
                 }
@@ -93,12 +93,46 @@ namespace NASCARVR
             }
 
         }
-     
 
-        static bool buttondown = false;
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(MGI.Platform.PC.PCControllerManager), "update")]
+        private static void GetAxisInput(MGI.Platform.PC.PCControllerManager __instance)
+        {
+            for (int i = 0; i < 8; i++)
+                if (Input.GetAxis("joystick axis " + i) > 0)
+                {
+                    DummyCamera.transform.localPosition += new Vector3(1f, 0, 0);
+                    Logs.WriteInfo($"LLLL: dpad {i} up");
+                }
+
+        }
+            static bool buttondown = false;
         [HarmonyPrefix]
         [HarmonyPatch(typeof(MGI.Platform.PC.NormalizedPCControllerState), "SetFromXInputGamepad")]
         private static void GetButtonInput(MGI.Platform.PC.NormalizedPCControllerState __instance) {
+
+            if (__instance.buttons[0])
+            {
+                DummyCamera.transform.localPosition += new Vector3(0, 0, -.01f);
+                Logs.WriteInfo($"LLLL: dpad up");
+            }
+            if (__instance.buttons[1])
+            {
+                    DummyCamera.transform.localPosition += new Vector3(0, 0,.01f);
+                    Logs.WriteInfo($"LLLL: dpad down");
+            }
+            if (__instance.buttons[2])
+            {
+                DummyCamera.transform.localPosition += new Vector3(.01f, 0, 0);
+                Logs.WriteInfo($"LLLL: dpad left");
+            }
+            if (__instance.buttons[3])
+            {
+                DummyCamera.transform.localPosition += new Vector3(-.01f, 0, 0);
+                Logs.WriteInfo($"LLLL: dpad right");
+            }
+
+
 
             if (__instance.buttons[12] && !buttondown)
             {  // X button
@@ -136,6 +170,7 @@ namespace NASCARVR
                  DummyCamera.transform.localPosition = new Vector3(0, -1.02f, 0);
 
                 VRCamera.transform.parent = DummyCamera.transform;
+
                 startpos = new Vector3(.2f, 1.8f, -.45f);
                 startrot = new Vector3(354f,284f,358f);
                 offset = startpos - VRCamera.transform.localPosition;
